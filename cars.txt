@@ -1,0 +1,11 @@
+# Fields: model_id|brand|model_name|year|color|price_pkr|quantity|is_electric|engine_cc|mileage_kmpl|fuel_type|seating_capacity|transmission|num_doors
+C001|Suzuki|Alto VXR|2024|Pearl White|2.05e+06|6|0|1000|18|Petrol|4|Manual|4
+C002|Suzuki|Cultus VXL|2024|Graphite Grey|2.35e+06|5|0|1000|17|Petrol|5|Manual|4
+C003|Honda|City Aspire|2024|Lunar Silver|4.35e+06|4|0|1500|14|Petrol|5|Automatic|4
+C004|Toyota|Corolla Altis|2024|Attitude Black|6.2e+06|3|0|1800|13|Petrol|5|Automatic|4
+C005|Toyota|Yaris ATIV|2024|Super White|4.15e+06|5|0|1300|14|Petrol|5|Automatic|4
+C006|Suzuki|WagonR VXL|2024|Sizzling Red|2.65e+06|7|0|1000|18|Petrol|5|Manual|4
+C007|KIA|Sportage AWD|2024|Aurora Black|9.85e+06|2|0|2000|11|Petrol|5|Automatic|4
+C008|Honda|Civic Oriel|2024|Platinum White|7.45e+06|3|0|1500|12|Petrol|5|Automatic|4
+C009|MG|HS Fastback|2024|Diamond Red|8.95e+06|2|0|1500|11|Petrol|5|Automatic|4
+C010|BYD|Seal|2024|Aurora White|1.35e+07|1|1|0|0|Electric|5|Automatic|4

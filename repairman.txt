@@ -1,0 +1,4 @@
+# Fields: repairman_id|name|email|phone|cnic|hire_date|salary|specialization|username|password
+RM001|Bilal Sheikh|bilal.sheikh@showroom.com|0301-2223344|35202-1122334-5|2021-05-12|60000|Engine|bilal.sheikh|pass123
+RM002|Farhan Iqbal|farhan.iqbal@showroom.com|0322-5556677|35203-2233445-6|2022-02-18|55000|Electrical|farhan.iqbal|pass123
+RM003|Saad Malik|saad.malik@showroom.com|0334-8889900|42201-3344556-7|2023-06-01|52000|Body Work|saad.malik|pass123

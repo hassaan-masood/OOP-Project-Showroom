@@ -1,0 +1,11 @@
+# Fields: model_id|brand|model_name|year|color|price_pkr|quantity|is_electric|engine_cc|mileage_kmpl|fuel_type|storage_capacity_liters
+S001|Honda|Dio Deluxe|2024|Pearl Sirona Red|245000|10|0|110|45|Petrol|18
+S002|Honda|Activa 6G|2024|Pearl Amazing White|260000|8|0|110|47|Petrol|18
+S003|Yamaha|Fascino 125|2024|Matte Blue|295000|7|0|125|50|Petrol|21
+S004|Yamaha|Ray ZR 125|2024|Metallic Red|280000|9|0|125|48|Petrol|21
+S005|Vespa|SXL 150|2024|Rosso Dragon|750000|3|0|150|42|Petrol|22
+S006|United|Scooty US100|2024|Bubblegum Pink|120000|15|0|100|55|Petrol|15
+S007|Ravi|Piaggio Zip|2024|Sky Blue|135000|12|0|100|52|Petrol|16
+S008|Road Prince|RP110|2024|Lilac Purple|115000|14|0|110|54|Petrol|16
+S009|Jolta|JE Scooty|2024|Mint Green|185000|6|1|0|0|Electric|20
+S010|Super Power|SP100 EV|2024|Coral White|175000|8|1|0|0|Electric|19

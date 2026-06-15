@@ -1,0 +1,6 @@
+# Fields: customer_id|name|email|phone|cnic|address|registration_date|username|password
+CU001|Ahmed Raza|ahmed.raza@gmail.com|0300-9988776|35201-1234567-9|House 12, Street 5, DHA Phase 6, Lahore|2024-01-10|ahmed.raza|cust123
+CU002|Sana Tariq|sana.tariq@gmail.com|0321-8877665|35202-2345678-0|Flat 3B, Gulberg Towers, Lahore|2024-02-15|sana.tariq|cust123
+CU003|Bilawal Chaudhry|bilawal.ch@gmail.com|0333-7766554|42101-3456789-1|House 45, F-7, Islamabad|2024-03-20|bilawal.ch|cust123
+CU004|Mehwish Aslam|mehwish.aslam@gmail.com|0345-6655443|35203-4567890-2|House 8, Model Town, Lahore|2024-04-05|mehwish.aslam|cust123
+CU005|Hamza Sheikh|hamza.sheikh@gmail.com|0311-5544332|61101-5678901-3|House 22, Cantt, Multan|2024-05-12|hamza.sheikh|cust123

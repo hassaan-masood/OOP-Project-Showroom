@@ -1,0 +1,16 @@
+# Fields: part_name|cost
+Engine Oil|1500
+Brake Pads|2500
+Clutch Plate|4500
+Battery|6000
+Headlight|3500
+Tail Light|2000
+Spark Plug|800
+Air Filter|1200
+Chain Sprocket Kit|5500
+Tyre|7000
+Side Mirror|1800
+Indicator Light|1000
+Brake Cable|600
+Carburetor|4000
+Suspension|8000

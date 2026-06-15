@@ -1,0 +1,6 @@
+# Fields: salesman_id|name|email|phone|cnic|hire_date|salary|sales_count|username|password
+SM001|Ali Hassan|ali.hassan@showroom.com|0300-1112233|35201-2345678-1|2021-03-15|85000|0|ali.hassan|pass123
+SM002|Zain Ahmed|zain.ahmed@showroom.com|0321-4445566|35202-3456789-2|2022-07-01|75000|1|zain.ahmed|pass123
+SM003|Nadia Qureshi|nadia.qureshi@showroom.com|0333-7778899|42101-4567890-3|2020-11-20|90000|0|nadia.qureshi|pass123
+SM004|Umar Farooq|umar.farooq@showroom.com|0345-0001122|61101-5678901-4|2023-01-10|70000|0|umar.farooq|pass123
+SM005|Hira Baig|hira.baig@showroom.com|0311-3334455|35301-6789012-5|2022-09-05|78000|0|hira.baig|pass123

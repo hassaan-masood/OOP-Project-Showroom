@@ -1,0 +1,2 @@
+# Fields: repair_id|customer_id|plate_number|vehicle_type|part_changed|cost|repairman_id|status|request_date
+RP001|CU001|LEA-2024|Scooty|Brake Pads|2500|RM001|Completed|2024-08-15

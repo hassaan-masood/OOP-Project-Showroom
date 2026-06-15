@@ -1,0 +1,11 @@
+# Fields: model_id|brand|model_name|year|color|price_pkr|quantity|is_electric|engine_cc|mileage_kmpl|fuel_type|bike_type
+B001|Honda|CD70 Dream|2024|Black|145000|20|0|70|65|Petrol|Standard
+B002|Honda|CG125 Self Start|2024|Candy Red|265000|15|0|125|45|Petrol|Standard
+B003|Yamaha|YBR125G|2024|Matte Black|320000|10|0|125|45|Petrol|Standard
+B004|Suzuki|GS150SE|2024|Pearl Blue|285000|12|0|150|40|Petrol|Sports
+B005|United|US125|2024|Wine Red|175000|18|0|125|50|Petrol|Standard
+B006|Honda|CB150F|2024|Repsol Red|385000|6|0|150|38|Petrol|Sports
+B007|Road Prince|RP70|2024|Royal Blue|130000|22|0|70|65|Petrol|Standard
+B008|Yamaha|YBR125Z|2024|Vivid Yellow|330000|8|0|125|44|Petrol|Cruiser
+B009|Honda|CD70 Dream SE|2024|Pearl White|155000|14|0|70|65|Petrol|Standard
+B010|Jolta|JE Bike|2024|Charcoal Grey|220000|9|1|0|0|Electric|Standard
