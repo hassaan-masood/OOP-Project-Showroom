@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <fstream>
 #include <vector>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -718,8 +720,8 @@ public:
                 return &(this->bikes[i]);
             }
         } for (int i = 0; i < this->scooties.size(); i++) {
-            if (this->bikes[i].get_model_id() == modelID) {
-                return &(this->bikes[i]);
+            if (this->scooties[i].get_model_id() == modelID) {
+                return &(this->scooties[i]);
             }
         } 
 
@@ -753,7 +755,7 @@ public:
             }
         }
         for (int i = 0; i < scooties.size(); i++) {
-            if (bikes[i].get_model_id() == modelID) {
+            if (scooties[i].get_model_id() == modelID) {
                 scooties.erase(scooties.begin() + i);
                 return true;
             }
@@ -834,7 +836,7 @@ public:
         int num = number_of_models ("sales.txt");
         ifstream read ("sales.txt");
         if (!read) {
-            throw "\"cars.txt\" File Can't be Opened.\n";
+            throw "\"sales.txt\" File Can't be Opened.\n";
         } getline (read,temp, '\n');
         
         for (int i = 0; i < num; i++) {
@@ -899,6 +901,613 @@ public:
     }
 };
 
-int main () { 
+class SoldVehicle {
+    string plateNumber;
+    string modelID;
+    string vehicleType;
+    string brand;
+    string modelName;
+    string customerID;
+    string salesmanID;
+    string saleDate;
+    double salePrice;
+ 
+public:
+
+    SoldVehicle () {
+        this->plateNumber = "NULL";
+        this->modelID = "NULL";
+        this->vehicleType = "NULL";
+        this->brand = "NULL";
+        this->modelName = "NULL";
+        this->customerID = "NULL";
+        this->salesmanID = "NULL";
+        this->saleDate = "NULL";
+        this->salePrice = 0;
+    }
+
+    SoldVehicle(string _plateNumber, string _modelID, string _vehicleType,
+    string _brand, string _modelName, string _customerID,
+    string _salesmanID, string _saleDate, double _salePrice) {
+        this->plateNumber = _plateNumber;
+        this->modelID = _modelID;
+        this->vehicleType = _vehicleType;
+        this->brand = _brand;
+        this->modelName = _modelName;
+        this->customerID = _customerID;
+        this->salesmanID = _salesmanID;
+        this->saleDate = _saleDate;
+        this->salePrice = _salePrice;
+    }
+ 
+    static SoldVehicle* getSoldVehicle(const string &__numPlate) {
+        string temp_plateNumber, temp_modelID, temp_vehicleType, temp_brand, temp_modelName, temp_customerID,
+        temp_salesmanID, temp_saleDate;
+        double temp_salePrice;
+        string temp;
     
+        int num = number_of_models ("sold_Vehicles.txt");
+        ifstream read ("sold_Vehicles.txt");
+        if (!read) {
+            throw "\"sold_Vehicles.txt\" File Can't be Opened.\n";
+        } getline (read,temp, '\n');
+        
+        for (int i = 0; i < num; i++) {
+            getline (read,temp_plateNumber, '|');
+            getline (read,temp_modelID, '|');
+            getline (read,temp_vehicleType, '|');
+            getline (read,temp_brand, '|');
+            getline (read,temp_modelName, '|');
+            getline (read,temp_customerID, '|');
+            getline (read,temp_salesmanID, '|');
+            getline (read,temp_saleDate, '|');
+            read >> temp_salePrice;
+            read.ignore();
+
+            if (temp_plateNumber == __numPlate) {
+                SoldVehicle * sld_veh = new SoldVehicle (temp_plateNumber, temp_modelID, temp_vehicleType,
+                temp_brand ,temp_modelName ,temp_customerID, temp_salesmanID, temp_saleDate, temp_salePrice);
+
+                read.close();
+                return sld_veh;
+            }
+        }
+
+        read.close();
+        throw "No Such Sold Vehicle Exist.\n";
+        return nullptr;
+    }
+
+    void dispSoldVec () {
+        cout << "〣---------------------------------------------------------------------"
+        "-----------------------------------------------------------------------〣\n";
+        cout << "〣                   Plate_Number:" << this->plateNumber << " ║ Model_ID:" << this->modelID <<
+        " ║ Vehicle_Type:" << this->vehicleType <<  " ║ Brand:" << this->brand << " ║ Model_Name:" << this->modelName 
+        << endl << "〣                          Customer_ID:" << this->customerID << " ║ Salesman_ID:" <<
+        this->salesmanID << " ║ Sale_Date:" << this->saleDate << " ║ Sale_Price:" << this->salePrice; 
+        cout << "\n〣---------------------------------------------------------------------"
+        "-----------------------------------------------------------------------〣\n";
+    }
+    
+    string getPlateNumber() const {
+        return this->plateNumber;
+    }
+
+    string getModelID() const {
+        return this->modelID;
+    }
+
+    string getVehicleType() const {
+        return this->vehicleType;
+    }
+
+    string getBrand() const {
+        return this->brand;
+    }
+
+    string getModelName() const {
+        return this->modelName;
+    }
+
+    string getCustomerID() const {
+        return this->customerID;
+    }
+
+    string getSalesmanID() const {
+        return this->salesmanID;
+    }
+
+    string getSaleDate() const {
+        return this->saleDate;
+    }
+
+    double getSalePrice() const {
+        return this->salePrice;
+    }
+};
+
+class SalesManager {
+    vector<SaleRecord> sales;
+    vector<SoldVehicle> soldVehicles;
+    vector <string> intro_lines;
+ 
+public:
+    void loadAll() {
+        string temp_saleID, temp_modelID, temp_vehicleType, temp_customerID, temp_salesmanID, temp_saleDate;
+        string temp_plateNumber, temp_brand, temp_modelName;
+        double temp_salePrice;
+        string temp;
+    
+        int num = number_of_models ("sales.txt");
+        ifstream read ("sales.txt");
+        if (!read) {
+            throw "\"sales.txt\" File Can't be Opened.\n";
+        } getline (read,temp, '\n');
+
+        this->intro_lines.push_back (temp);
+
+        for (int i = 0; i < num; i++) {
+            getline (read,temp_saleID, '|');
+            getline (read,temp_modelID, '|');
+            getline (read,temp_vehicleType, '|');
+            getline (read,temp_customerID, '|');
+            getline (read,temp_salesmanID, '|');
+            getline (read,temp_saleDate, '|');
+            read >> temp_salePrice;
+            read.ignore();
+
+            SaleRecord nw_Rec (temp_saleID, temp_modelID, temp_vehicleType,
+            temp_customerID, temp_salesmanID, temp_saleDate, temp_salePrice);
+
+            sales.push_back(nw_Rec);
+        } read.close();
+
+        num = number_of_models ("sold_Vehicles.txt");
+        read.open ("sold_Vehicles.txt");
+
+        if (!read) {
+            throw "\"sold_Vehicles.txt\" File Can't be Opened.\n";
+        } getline (read,temp, '\n');
+
+        this->intro_lines.push_back (temp);
+
+        for (int i = 0; i < num; i++) {
+            getline (read,temp_plateNumber, '|');
+            getline (read,temp_modelID, '|');
+            getline (read,temp_vehicleType, '|');
+            getline (read,temp_brand, '|');
+            getline (read,temp_modelName, '|');
+            getline (read,temp_customerID, '|');
+            getline (read,temp_salesmanID, '|');
+            getline (read,temp_saleDate, '|');
+            read >> temp_salePrice;
+            read.ignore();
+
+            SoldVehicle nw_veh (temp_plateNumber, temp_modelID, temp_vehicleType,
+            temp_brand , temp_modelName,temp_customerID, temp_salesmanID, temp_saleDate, temp_salePrice);
+
+            soldVehicles.push_back(nw_veh);
+        }
+    }
+
+    void saveAll() const {
+        ofstream write ("sales.txt");
+        if (!write) {
+            throw "\"sales.txt\" File Can't be Opened.\n";
+        }
+
+        write << this->intro_lines[0] << endl;
+        for (int i = 0; i < this->sales.size(); i++) {
+            write << this->sales[i].getSaleID() << "|" << this->sales[i].getModelID() << "|" 
+            << this->sales[i].getVehicleType() << "|" << this->sales[i].getCustomerID() << "|" 
+            << this->sales[i].getSalesmanID() << "|" << this->sales[i].getSaleDate() << "|"
+            << this->sales[i].getSalePrice() << endl;
+        } write.close();
+
+        write.open ("sold_Vehicles.txt");
+        if (!write) {
+            throw "\"sold_Vehicles.txt\" File Can't be Opened.\n";
+        }
+
+        write << this->intro_lines[1] << endl;
+        for (int i = 0; i < this->soldVehicles.size(); i++) {
+            write << this->soldVehicles[i].getPlateNumber() << "|" << this->soldVehicles[i].getModelID() << "|" 
+            << this->soldVehicles[i].getVehicleType() << "|" << this->soldVehicles[i].getBrand() << "|"  <<
+            this->soldVehicles[i].getModelName() << "|" << this->soldVehicles[i].getCustomerID() << "|"  <<
+            this->soldVehicles[i].getSalesmanID() << "|" << this->soldVehicles[i].getSaleDate() << "|" <<
+            this->soldVehicles[i].getSalePrice() << endl;
+        } write.close();
+    }
+ 
+    string generate_PlateNumber() const {
+        string plate = "";
+
+        for(int i = 0; i < 3; i++) {
+            plate += 'A' + (rand() % 26); // Taking mod with 26 and adding in A 
+        } plate += "-";
+
+        for(int i = 0; i < 4; i++) {
+            plate += '0' + (rand() % 10); // 0 + mod with 10 to generate random number
+        }
+
+        return plate;
+    }
+ 
+    void record_Sale(const SaleRecord &sr, const SoldVehicle &sv) {
+        SaleRecord temp_saleRecord = sr;
+        SoldVehicle temp_SoldVehicle = sv;
+
+        this->sales.push_back (temp_saleRecord);
+        this->soldVehicles.push_back (temp_SoldVehicle);
+    }
+ 
+    vector<SoldVehicle> get_Purchases_By_Customer(const string &customerID) const {
+        vector <SoldVehicle> to_deliver;
+        for (int i = 0; i < this->soldVehicles.size(); i++) {
+            if (this->soldVehicles[i].getCustomerID() == customerID) {
+                to_deliver.push_back (this->soldVehicles[i]);
+            }
+        }
+
+        return to_deliver;
+    }
+
+    vector<SaleRecord> get_Sales_By_Salesman(const string &salesmanID) const {
+        vector <SaleRecord> to_deliver;
+        for (int i = 0; i < this->sales.size(); i++) {
+            if (this->sales[i].getSalesmanID() == salesmanID) {
+                to_deliver.push_back (this->sales[i]);
+            }
+        }
+
+        return to_deliver;
+    }
+ 
+    int get_Total_Sales_Count() const {
+        return this->sales.size();
+    }
+
+    double get_Total_Revenue() const { // To find total of all sales
+        double tempo = 0;
+        for (int i = 0; i < this->sales.size(); i++) {
+            tempo += this->sales[i].getSalePrice();
+        }
+        return tempo;
+    }
+};
+
+class RepairRecord {
+    string repair_Id;
+    string Customer_Id;
+    string Plate_Number;
+    string vehicle_type;
+    string Part_Changed;
+    double cost___chunna; // LMAFO
+    string RepairManID;
+    string status;
+    string requestDate;
+ 
+public:
+    RepairRecord() {
+        this->repair_Id = "NULL";
+        this->Customer_Id = "NULL";
+        this->Plate_Number = "NULL";
+        this->vehicle_type = "NULL";
+        this->Part_Changed = "NULL";
+        this->cost___chunna = 0;
+        this->RepairManID = "NULL";
+        this->status = "NULL";
+        this->requestDate = "NULL";
+    }
+
+    RepairRecord(string _repair_Id, string _Customer_Id, string _Plate_Number,
+    string _vehicle_type, string _Part_Changed, double _cost___chunna,
+    string _repairManID, string _status, string _requestDate) {
+        this->repair_Id = _repair_Id;
+        this->Customer_Id = _Customer_Id;
+        this->Plate_Number = _Plate_Number;
+        this->vehicle_type = _vehicle_type;
+        this->Part_Changed = _Part_Changed;
+        this->cost___chunna = _cost___chunna;
+        this->RepairManID = _repairManID;
+        this->status = _status;
+        this->requestDate = _requestDate;
+    }
+
+    RepairRecord (const RepairRecord& other) {
+        this->repair_Id = other.repair_Id;
+        this->Customer_Id = other.Customer_Id;
+        this->Plate_Number = other.Plate_Number;
+        this->vehicle_type = other.vehicle_type;
+        this->Part_Changed = other.Part_Changed;
+        this->cost___chunna = other.cost___chunna;
+        this->RepairManID = other.RepairManID;
+        this->status = other.status;
+        this->requestDate = other.requestDate;
+    }
+
+    string get_RepairID() const {
+        return this->repair_Id;
+    }
+
+    string get_CustomerID() const {
+        return this->Customer_Id;
+    }
+
+    string get_PlateNumber() const {
+        return this->Plate_Number;
+    }
+
+    string get_VehicleType() const {
+        return this->vehicle_type;
+    }
+
+    string get_PartChanged() const {
+        return this->Part_Changed;
+    }
+
+    double get_Cost() const {
+        return this->cost___chunna;
+    }
+
+    string get_RepairManID() const {
+        return this->RepairManID;
+    }
+
+    string get_Status() const {
+        return this->status;
+    }
+
+    string get_RequestDate() const {
+        return this->requestDate;
+    }
+ 
+    void set_Status(const string &nw_sts) {
+        this->status = nw_sts;
+    }
+
+    void set_RepairManID(const string &id) {
+        this->RepairManID = id;
+    }
+
+    void Disp_RepairRecord () {
+        cout << "〣---------------------------------------------------------------------"
+        "-----------------------------------------------------------------------〣\n";
+        cout << "〣               Repair_ID:" << this->repair_Id << " ║ Customer_ID:" << this->Customer_Id <<
+        " ║ Plate_Number:" << this->Plate_Number  << " ║ Vehicle_Type:" << this->vehicle_type <<
+        " ║ Part:" << this->Part_Changed << endl << "〣                              Cost:" <<
+        this->cost___chunna << " ║ Repair_ManID:" << this->RepairManID << " ║ Status:" << this->status <<
+        " ║ Date:" << this->requestDate; 
+        cout << "\n〣---------------------------------------------------------------------"
+        "-----------------------------------------------------------------------〣\n";
+    }
+};
+
+class Part {
+    string name_of_part;
+    double cost_of_part;
+
+public:
+    Part() {
+        name_of_part = "NULL";
+        cost_of_part = 0;
+    }
+
+    Part(string _name, double _cost) {
+        this->name_of_part = _name;
+        this->cost_of_part = _cost;
+    }
+
+    string get_Part () const {
+        return this->name_of_part;
+    }
+
+    double get_Cost () const {
+        return this->cost_of_part;
+    }
+
+    void change_Part_Name (string nw_name) {
+        this->name_of_part = nw_name;
+    }
+
+    void change_Cost (double nw_cost) {
+        this->cost_of_part = nw_cost;
+    }
+};
+
+class RepairManager {
+    vector<RepairRecord> repairs;
+    vector<Part> partPriceList;
+    vector <string> intro_lines;
+
+public:
+    void loadAll() {
+        string temp_repair_Id, temp_Customer_Id, temp_Plate_Number, temp_vehicle_type, temp_Part_Changed;
+        string temp_RepairManID, temp_status, temp_requestDate, temp_name_of_part;
+        double temp_cost___chunna, temp_cost_of_part;
+        string temp;
+
+        int num = number_of_models("Repair_history.txt");
+        ifstream read ("Repair_history.txt");
+        if (!read) {
+            throw "\"Repair_history.txt\" File Can't be Opened.\n";
+        }   getline (read, temp, '\n');
+
+        this->intro_lines.push_back (temp);
+
+        for (int i = 0; i < num; i++) {
+            getline (read, temp_repair_Id, '|');
+            getline (read, temp_Customer_Id, '|');
+            getline (read, temp_Plate_Number, '|');
+            getline (read, temp_vehicle_type, '|');
+            getline (read, temp_Part_Changed, '|');
+            read >> temp_cost___chunna;
+            read.ignore();
+            getline (read, temp_RepairManID, '|');
+            getline (read, temp_status, '|');
+            getline (read, temp_requestDate, '\n');
+
+            RepairRecord temp_rec (temp_repair_Id, temp_Customer_Id, temp_Plate_Number, temp_vehicle_type,
+            temp_Part_Changed, temp_cost___chunna, temp_RepairManID, temp_status, temp_requestDate);
+
+            this->repairs.push_back (temp_rec);
+        } read.close();
+
+        num = number_of_models("Price_list_of_Parts.txt");
+        read.open ("Price_list_of_Parts.txt");
+        if (!read) {
+            throw "\"Price_list_of_Parts.txt\" File Can't be Opened.\n";
+        }   getline (read, temp, '\n');
+
+        this->intro_lines.push_back (temp);
+
+        for (int i = 0; i < num; i++) {
+            getline (read, temp_name_of_part, '|');
+            read >> temp_cost_of_part;
+            read.ignore();
+
+            Part nw_part (temp_name_of_part, temp_cost_of_part);
+
+            this->partPriceList.push_back (nw_part);
+        } read.close();
+
+    }
+
+    void saveAll() const {
+        ofstream write ("Repair_history.txt");
+        if (!write) {
+            throw "\"Repair_history.txt\" File Can't be Opened.\n";
+        }
+
+        write << this->intro_lines[0] << endl;
+        for (int i = 0; i < this->repairs.size(); i++) {
+            write << this->repairs[i].get_RepairID() << "|" << this->repairs[i].get_CustomerID() << "|" 
+            << this->repairs[i].get_PlateNumber() << "|" << this->repairs[i].get_VehicleType() << "|"
+            << this->repairs[i].get_PartChanged() << "|" << this->repairs[i].get_Cost() << "|" 
+            << this->repairs[i].get_RepairManID() << "|" << this->repairs[i].get_Status() << "|"
+            << this->repairs[i].get_RequestDate() << endl;
+        } write.close();
+
+        write.open ("Price_list_of_Parts.txt");
+        if (!write) {
+            throw "\"Price_list_of_Parts.txt\" File Can't be Opened.\n";
+        }
+
+        write << this->intro_lines[1] << endl;
+        for (int i = 0; i < this->partPriceList.size(); i++) {
+            write << this->partPriceList[i].get_Part() << "|" << this->partPriceList[i].get_Cost() << endl;
+        } write.close();
+    }
+
+    double getPartCost(const string &part_name) const {
+        for (int i = 0; i < this->partPriceList.size(); i++) {
+            if (this->partPriceList[i].get_Part() == part_name) {
+                return this->partPriceList[i].get_Cost();
+            }
+        }
+
+        throw "No Such Part Exists.\n";
+        return 0;
+    }
+
+    string requestRepair(const string &customerID, const string &plateNumber,
+    const string &vehicleType, const string &partChanged, string &datee) {
+        double temp_cost = getPartCost (partChanged);
+        string nw_id, prev_id;
+        if (this->repairs.size() == 0) {
+            nw_id = "RP001";
+        } else {
+            prev_id = this->repairs[this->repairs.size() - 1].get_RepairID();
+            char ch = prev_id.back() + 1;
+            nw_id = "RP00" + string (1,ch);
+        }
+
+        RepairRecord nw_rec (nw_id, customerID, plateNumber, vehicleType, partChanged, temp_cost, "NULL", "Pending", datee);
+        this->repairs.push_back(nw_rec);
+        return nw_id;
+    }
+
+    vector<RepairRecord> getHistoryByCustomer(const string &customer_ID) const {
+        vector <RepairRecord> hist_to_deliver;
+        for (int i = 0; i < this->repairs.size(); i++) {
+            if (this->repairs[i].get_CustomerID() == customer_ID) {
+                hist_to_deliver.push_back (this->repairs[i]);
+            }
+        }
+
+        return hist_to_deliver;
+    }
+
+    vector<RepairRecord> getJobsByRepairMan(const string &Repair_ManID) const {
+        vector <RepairRecord> hist_to_deliver;
+        for (int i = 0; i < this->repairs.size(); i++) {
+            if (this->repairs[i].get_RepairManID() == Repair_ManID) {
+                hist_to_deliver.push_back (this->repairs[i]);
+            }
+        }
+
+        return hist_to_deliver;
+    }
+
+    vector<RepairRecord> getPendingJobs() const {
+        vector <RepairRecord> temp_pending_stuff;
+        for (int i = 0; i < this->repairs.size(); i++) {
+            if (this->repairs[i].get_Status() == "Pending") {
+                temp_pending_stuff.push_back (this->repairs[i]);
+            }
+        }
+
+        return temp_pending_stuff;
+    }
+
+    bool assignRepairMan(const string &__repair_ID, const string &repairManID) {
+        for (int i = 0; i < this->repairs.size(); i++) {
+            if (this->repairs[i].get_RepairID() == __repair_ID) {
+                if (this->repairs[i].get_Status() == "Completed") {
+                    throw "This Repair is Already Done.\n";
+                    return 0;
+                } else {
+                    this->repairs[i].set_RepairManID (repairManID);
+                    return 1;
+                }
+            }
+        }
+
+        throw "No Such Repair ID.\n";
+        return 0;
+    }
+
+    bool updateStatus(const string &repair_iD, const string &newSts) {
+        for (int i = 0; i < this->repairs.size(); i++) {
+            if (this->repairs[i].get_RepairID() == repair_iD) {
+                this->repairs[i].set_Status (newSts);
+                return 1;
+            }
+        }
+
+        throw "Can't Update Status.\n";
+        return 0;
+    }
+};
+
+int main () { 
+    // SaleRecord temp1 ("SL002", "B002", "Bike", "CU001", "SMOO3", "2024-06-02", 30000000);
+    // SoldVehicle temp2 ("LEP-1234", "B002", "Bike", "Honda", "W-bike", "CU001", "SMOO3", "2024-06-02", 30000000);
+
+    // SalesManager smg;
+    // smg.loadAll();
+    // smg.recordSale(temp1,temp2);
+    // smg.saveAll();
+
+    // SalesManager smg;
+    // smg.loadAll();
+
+    // vector <SaleRecord> myvect = smg.get_Sales_By_Salesman("SM002");
+
+    // for (int i = 0; i < myvect.size(); i++) {
+    //     myvect[i].dispRec();
+    // }
+
+    RepairRecord rec ("RP001", "CU001", "LEA-2024", "Scooty", "Brake Pads", 2500, "RM001", "Completed", "2024-08-15");
+    rec.Disp_RepairRecord();
 }   

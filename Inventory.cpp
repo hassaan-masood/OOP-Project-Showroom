@@ -276,7 +276,7 @@ Vehicle* Inventory::findByModelID(const string &modelID) {
             return &(this->bikes[i]);
         }
     } for (int i = 0; i < this->scooties.size(); i++) {
-        if (this->bikes[i].get_model_id() == modelID) {
+        if (this->scooties[i].get_model_id() == modelID) {
             return &(this->scooties[i]);
         }
     } 
@@ -305,13 +305,13 @@ bool Inventory::removeModel(const string &modelID) {
         }
     }
     for (int i = 0; i < bikes.size(); i++) {
-        if (cars[i].get_model_id() == modelID) {
+        if (bikes[i].get_model_id() == modelID) {
             bikes.erase(bikes.begin() + i);  
             return true;
         }
     }
     for (int i = 0; i < scooties.size(); i++) {
-        if (cars[i].get_model_id() == modelID) {
+        if (scooties[i].get_model_id() == modelID) {
             scooties.erase(scooties.begin() + i);
             return true;
         }
