@@ -4,3 +4,4 @@ CU002|Sana Tariq|sana.tariq@gmail.com|0321-8877665|35202-2345678-0|Flat 3B, Gulb
 CU003|Bilawal Chaudhry|bilawal.ch@gmail.com|0333-7766554|42101-3456789-1|House 45, F-7, Islamabad|2024-03-20|bilawal.ch|cust123
 CU004|Mehwish Aslam|mehwish.aslam@gmail.com|0345-6655443|35203-4567890-2|House 8, Model Town, Lahore|2024-04-05|mehwish.aslam|cust123
 CU005|Hamza Sheikh|hamza.sheikh@gmail.com|0311-5544332|61101-5678901-3|House 22, Cantt, Multan|2024-05-12|hamza.sheikh|cust123
+CU006|Hassaan Masood |pubgonnight@gmail.com|03364723089|35202-5989467-4|11 D Ithad Colony Lhr|20-06-2026|dream_nyx._|1q2qq3qqq4qqqq

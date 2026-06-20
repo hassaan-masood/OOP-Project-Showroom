@@ -1,2 +1,3 @@
 # Fields: plate_number|model_id|vehicle_type|brand|model_name|customer_id|salesman_id|sale_date|sale_price
 LEA-2024|S006|Scooty|United|Scooty US100|CU001|SM002|2024-06-01|120000
+BDK-4522|C001|Car|Suzuki|Alto VXR|CU001|SM001|18-06-2026|2.05e+06

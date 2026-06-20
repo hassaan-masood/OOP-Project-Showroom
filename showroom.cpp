@@ -5,6 +5,8 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -24,8 +26,11 @@ int number_of_models (string file_name) {
     fin.close();
 
     num_of_lines -= 2;
+    if (num_of_lines < 0) {
+        return 0;
+    } 
+
     return num_of_lines;
-    
 }
 
 class Vehicle {
@@ -661,10 +666,6 @@ public:
             << "|" << this->bikes[i].get_quantity() << "|" << this->bikes[i].get_is_electric() << "|" << this->bikes[i].get_engine_cc()
             << "|" << this->bikes[i].get_mileage() << "|" << this->bikes[i].get_fuel_type() << "|" << this->bikes[i].get_bikeType() << endl;
 
-            if (i < this->bikes.size() - 1) {
-                cout << endl;
-            }
-
         } write.close();
 
         write.open ("scooties.txt");
@@ -677,10 +678,6 @@ public:
             << "|" << this->scooties[i].get_year() << "|" << this->scooties[i].get_color() << "|" << this->scooties[i].get_price() 
             << "|" << this->scooties[i].get_quantity() << "|" << this->scooties[i].get_is_electric() << "|" << this->scooties[i].get_engine_cc()
             << "|" << this->scooties[i].get_mileage() << "|" << this->scooties[i].get_fuel_type() << "|" << this->scooties[i].get_storageCapacityLiters() << endl;
-
-            if (i < this->scooties.size() - 1) {
-                cout << endl;
-            }
 
         } write.close();
     }   
@@ -1226,6 +1223,44 @@ public:
         this->requestDate = other.requestDate;
     }
 
+    static RepairRecord* getRepairRecord(const string &__repID) {
+        string temp_repair_Id, temp_Customer_Id, temp_Plate_Number, temp_vehicle_type;
+        string temp_Part_Changed, temp_RepairManID, temp_status, temp_requestDate;
+        double temp_cost___chunna;
+        string temp;
+    
+        int num = number_of_models ("Repair_history.txt");
+        ifstream read ("Repair_history.txt");
+        if (!read) {
+            throw "\"Repair_history.txt\" File Can't be Opened.\n";
+        } getline (read,temp, '\n');
+        
+        for (int i = 0; i < num; i++) {
+            getline (read,temp_repair_Id, '|');
+            getline (read,temp_Customer_Id, '|');
+            getline (read,temp_Plate_Number, '|');
+            getline (read,temp_vehicle_type, '|');
+            getline (read,temp_Part_Changed, '|');
+            read >> temp_cost___chunna;
+            read.ignore();
+            getline (read,temp_RepairManID, '|');
+            getline (read,temp_status, '|');
+            getline (read,temp_requestDate, '|');
+
+            if (temp_repair_Id == __repID) {
+                RepairRecord * rep_rec = new RepairRecord (temp_repair_Id, temp_Customer_Id, temp_Plate_Number,
+                temp_vehicle_type, temp_Part_Changed, temp_cost___chunna, temp_RepairManID, temp_status, temp_requestDate);
+
+                read.close();
+                return rep_rec;
+            }
+        }
+
+        read.close();
+        throw "No Such Repair Record Exist.\n";
+        return nullptr;
+    }
+
     string get_RepairID() const {
         return this->repair_Id;
     }
@@ -1278,9 +1313,11 @@ public:
         " ║ Part:" << this->Part_Changed << endl << "〣                              Cost:" <<
         this->cost___chunna << " ║ Repair_ManID:" << this->RepairManID << " ║ Status:" << this->status <<
         " ║ Date:" << this->requestDate; 
-        cout << "\n〣---------------------------------------------------------------------"
+        cout << "〣---------------------------------------------------------------------"
         "-----------------------------------------------------------------------〣\n";
     }
+
+
 };
 
 class Part {
@@ -1411,7 +1448,7 @@ public:
     }
 
     string requestRepair(const string &customerID, const string &plateNumber,
-    const string &vehicleType, const string &partChanged, string &datee) {
+    const string &vehicleType, const string &partChanged,const string &datee) {
         double temp_cost = getPartCost (partChanged);
         string nw_id, prev_id;
         if (this->repairs.size() == 0) {
@@ -1490,24 +1527,1500 @@ public:
     }
 };
 
-int main () { 
-    // SaleRecord temp1 ("SL002", "B002", "Bike", "CU001", "SMOO3", "2024-06-02", 30000000);
-    // SoldVehicle temp2 ("LEP-1234", "B002", "Bike", "Honda", "W-bike", "CU001", "SMOO3", "2024-06-02", 30000000);
+class Person {
+protected:
+    string id;
+    string name;
+    string email;
+    string phone;
+    string username;
+    string password;
 
-    // SalesManager smg;
-    // smg.loadAll();
-    // smg.recordSale(temp1,temp2);
-    // smg.saveAll();
+public:
+    Person () {
+        this->id = "NULL";
+        this->name = "NULL";
+        this->email = "NULL";
+        this->phone = "NULL";
+        this->username = "NULL";
+        this->password = "NULL";
+    }
 
-    // SalesManager smg;
-    // smg.loadAll();
+    Person(string _id, string _name, string _email, string _phone,
+    string _username, string _password) {
+        this->id = _id;
+        this->name = _name;
+        this->email = _email;
+        this->phone = _phone;
+        this->username = _username;
+        this->password = _password;
+    }
 
-    // vector <SaleRecord> myvect = smg.get_Sales_By_Salesman("SM002");
+    Person (const Person &other) {
+        this->id = other.id;
+        this->name = other.name;
+        this->email = other.email;
+        this->phone = other.phone;
+        this->username = other.username;
+        this->password = other.password;
+    }
+ 
+    virtual ~Person() {}
 
-    // for (int i = 0; i < myvect.size(); i++) {
-    //     myvect[i].dispRec();
-    // }
+    string getID() const {
+        return this->id;
+    }
 
-    RepairRecord rec ("RP001", "CU001", "LEA-2024", "Scooty", "Brake Pads", 2500, "RM001", "Completed", "2024-08-15");
-    rec.Disp_RepairRecord();
-}   
+    string getName() const {
+        return this->name;
+    }
+
+    string getEmail() const {
+        return this->email;
+    }
+
+    string getPhone() const {
+        return this->phone;
+    }
+
+    string getUsername() const {
+        return this->username;
+    }
+ 
+    bool checkPassword(const string &inp_pass) const {
+        if (this->password == inp_pass) {
+            return true;
+        } return false;
+    }
+ 
+    virtual void showMenu() = 0;
+    virtual string getRole() const = 0;
+    virtual void disp_Info () const = 0;
+};
+
+class Employee : public Person {
+protected:
+    string cnic;
+    string hireDate;
+    double salary;
+ 
+public:
+    Employee () : Person () {
+        this->cnic = "NULL";
+        this->hireDate = "NULL";
+        this->salary = 0;
+    }
+
+    Employee(string _id, string _name, string _email, string _phone,
+    string _username, string _password, string _cnic,
+    string _hireDate, double _salary) : Person (_id,_name,_email,_phone,_username,_password) {
+        this->cnic = _cnic;
+        this->hireDate = _hireDate;
+        this->salary = _salary;
+    }
+
+    Employee (const Employee &other) : Person (other) {
+        this->cnic = other.cnic;
+        this->hireDate = other.hireDate;
+        this->salary = other.salary;
+    }
+
+    string getCNIC() const {
+        return this->cnic;
+    }
+
+    string getHireDate() const {
+        return this->hireDate;
+    }
+
+    double getSalary() const {
+        return this->salary;
+    }
+
+    void setSalary(double nw_sal) {
+        if (nw_sal > 0) {
+            this->salary = nw_sal;
+        } else {
+            throw "Can't Update Salary.\n";
+        }
+    }    
+};
+
+class Customer : public Person {
+    string cnic;
+    string address;
+    string registration_date;
+
+public:
+    Customer () : Person () {
+        this->cnic = "NULL";
+        this->address = "NULL";
+        this->registration_date = "NULL";
+    }
+
+    Customer(string _id, string _name, string _email, string _phone,
+    string _username, string _password, string _cnic,
+    string _address, string _registration_date) : Person (_id,_name,_email,_phone,_username,_password) {
+        this->cnic = _cnic;
+        this->address = _address;
+        this->registration_date = _registration_date;
+    } 
+
+    Customer (const Customer &other) : Person (other) {
+        this->cnic = other.cnic;
+        this->address = other.address;
+        this->registration_date = other.registration_date;
+    }
+
+    void showMenu() override {
+        cout << "                            |〣--------------------------|〣 Customer Service Menu 〣|--------------------------〣|\n\n";
+        cout << "1. Browse Stock Cars.\n";
+        cout << "2. Browse Stock Bikes.\n";
+        cout << "3. Browse Stock Scooties.\n";
+        cout << "4. Browse All Stock Vehicles.\n";
+        cout << "5. View My Purchase History.\n";
+        cout << "6. View My Repair History.\n";
+        cout << "7. Request Vehicle Repair.\n";
+        cout << "8. Exit.\n";
+    }
+
+    string getRole() const override {
+        return "Customer";
+    }
+
+    string getPasscode () const {
+        return this->password;
+    }
+
+    string get_Date () const {
+        return this->registration_date;
+    }
+
+    void disp_Info () const override {
+        cout << "                            |〣--------------------------|〣 Customer Service Menu 〣|--------------------------〣|\n\n";
+        cout << "〣------------------------------------------------------------------"
+        "-----------------------------------------------------------------------〣\n";
+        cout << "〣           Customer_ID: " << this->id << " ║ Name: " << this->name << " ║ CNIC: " << this->cnic
+        << " ║ Registration_Date: " << this->registration_date << " ║ Phone: " << this->phone;
+        cout << "\n〣------------------------------------------------------------------"
+        "-----------------------------------------------------------------------〣\n";
+    }
+
+    string getCNIC() const {
+        return this->cnic;
+    }
+    string getAddress() const {
+        return this->address;
+    }
+ 
+    void browse_cars(Inventory &inv) const {
+        cout << "                            |〣--------------------------|〣 Customer Service Menu 〣|--------------------------〣|\n\n";
+        
+        inv.Changeable_disp("Car");
+    }
+
+    void browse_bikes(Inventory &inv) const {
+        cout << "                            |〣--------------------------|〣 Customer Service Menu 〣|--------------------------〣|\n\n";
+        
+        inv.Changeable_disp("Bike");
+    }
+
+    void browse_scooties(Inventory &inv) const {
+        cout << "                            |〣--------------------------|〣 Customer Service Menu 〣|--------------------------〣|\n\n";
+        
+        inv.Changeable_disp("Scooty");
+    }
+
+    void browse_vehicles(Inventory &inv) const {
+        cout << "                            |〣--------------------------|〣 Customer Service Menu 〣|--------------------------〣|\n\n";
+        
+        inv.Changeable_disp();
+    }
+
+    void viewMyPurchases(SalesManager &sm) const {
+        cout << "                            |〣--------------------------|〣 Customer Service Menu 〣|--------------------------〣|\n\n";
+     
+        vector <SoldVehicle> vect = sm.get_Purchases_By_Customer (this->id);
+        if (vect.size() == 0) {
+            cout << "No Purchases Yet.\n";
+        } else {
+            for (int i = 0; i < vect.size(); i++) {
+                vect[i].dispSoldVec();
+            }
+        }
+    }
+
+    void viewMyRepairHistory(RepairManager &rm) const {
+        cout << "                            |〣--------------------------|〣 Customer Service Menu 〣|--------------------------〣|\n\n";
+     
+        vector <RepairRecord> vect = rm.getHistoryByCustomer (this->id);
+        if (vect.size() == 0) {
+            cout << "No Purchases Yet.\n";
+        } else {
+            for (int i = 0; i < vect.size(); i++) {
+                vect[i].Disp_RepairRecord();
+            }
+        }
+    }
+
+    void requestVehicleRepair(RepairManager &rm, const string &plateNumber,
+    const string &vehicleType, const string &partChanged) {
+
+        // This Code Block in taken From Online Resourses To Get Current Time.
+        time_t now = time(nullptr);
+        tm* local_time = localtime(&now);
+        stringstream ss;
+        ss << put_time(local_time, "%d-%m-%Y");
+        string date_str = ss.str();
+
+        rm.requestRepair(this->id, plateNumber, vehicleType, partChanged,date_str);
+    }
+ 
+    static Customer* getCustomer_ById (string __id) {
+        string temp_id, temp_name, temp_email, temp_phone, temp_username, temp_password;
+        string temp_cnic, temp_address, temp_registration_date;
+        string temp;
+
+        int num = number_of_models ("customer.txt");
+
+        ifstream read ("customer.txt");
+        if (!read) {
+            throw "\"customer.txt\" File Can't be Opened.\n";
+        } getline (read, temp, '\n');
+
+        for (int i = 0; i < num; i++) {
+            getline (read, temp_id, '|');
+            getline (read, temp_name, '|');
+            getline (read, temp_email, '|');
+            getline (read, temp_phone, '|');
+            getline (read, temp_cnic, '|');
+            getline (read, temp_address, '|');
+            getline (read, temp_registration_date, '|');
+            getline (read, temp_username, '|');
+            getline (read, temp_password, '\n');
+
+            if (temp_id == __id) {
+                Customer* to_send = new Customer (temp_id, temp_name, temp_email, temp_phone, temp_username,
+                temp_password, temp_cnic, temp_address, temp_registration_date);
+    
+                return to_send;
+            }
+        }
+
+        throw "No Customer of Such ID.\n";
+        return nullptr;
+    } 
+};
+
+class Salesman : public Employee {
+    int sales_ct;
+ 
+public:
+    Salesman () : Employee () {
+        this->sales_ct = 0;
+    }
+
+    Salesman(string _id, string _name, string _email, string _phone,
+    string _username, string _password, string _cnic,
+    string _hireDate, double _Salary, int _ct) : Employee 
+    (_id,_name,_email,_phone,_username,_password,_cnic,_hireDate,_Salary) {
+        this->sales_ct = _ct;
+    } 
+
+    Salesman (const Salesman &other) : Employee (other) {
+        this->sales_ct = other.sales_ct;
+    }
+ 
+    void showMenu() override {
+        cout << "                            |〣--------------------------|〣 Salesman Service Menu 〣|--------------------------〣|\n\n";
+        cout << "1. Sale Any Vehicle.\n";
+        cout << "2. View My Profile.\n";
+        cout << "3. View My Sales History.\n";
+        cout << "4. Exit.\n";
+    }
+
+    string getRole() const override {
+        return "Salesman";
+    } 
+
+    void disp_Info () const override {
+        cout << "                            |〣--------------------------|〣 Salesman Service Menu 〣|--------------------------〣|\n\n";
+        cout << "〣------------------------------------------------------------------"
+        "-----------------------------------------------------------------------〣\n";
+        cout << "〣           Salesman_ID: " << this->id << " ║ Name: " << this->name << " ║ CNIC: " << this->cnic
+        << " ║ Salary: " << this->salary << " ║ Phone: " << this->phone;
+        cout << "\n〣------------------------------------------------------------------"
+        "-----------------------------------------------------------------------〣\n";
+    }
+ 
+    int getSalesCount() const {
+        return this->sales_ct;
+    }
+
+    string getPasscode () const {
+        return this->password;
+    }
+
+    void incrementSalesCount() {
+        this->sales_ct++;
+    }
+ 
+    void sellVehicle(Inventory &inv, Customer &cust, SalesManager &sm,
+    const string &modelID) {
+        Vehicle* ptr = inv.findByModelID(modelID);
+        int qunt = ptr->get_quantity();
+        qunt --;
+        inv.updateQuantity(modelID, qunt);
+        string number_plt = sm.generate_PlateNumber();
+
+        // This Code Block in taken From Online Resourses To Get Current Time.
+        time_t now = time(nullptr);
+        tm* local_time = localtime(&now);
+        stringstream ss;
+        ss << put_time(local_time, "%d-%m-%Y");
+        string date_str = ss.str();
+
+        int num = number_of_models ("sales.txt");
+        num += 1;
+        string s1 = to_string(num);
+        string slr_id = "SL00" + s1;
+
+        SoldVehicle veh (number_plt, modelID, ptr->getType(), ptr->get_brand(), ptr->get_model_name(), cust.getID(), this->id, date_str, ptr->get_price());
+        SaleRecord rec (slr_id, modelID, ptr->getType(), cust.getID(), this->id, date_str, ptr->get_price());
+
+        sm.record_Sale(rec,veh);
+        sm.saveAll();
+        inv.saveAll();
+    }
+
+    void viewMyProfile() const {
+        cout << "                            |〣--------------------------|〣 Salesman Service Menu 〣|--------------------------〣|\n\n";
+        cout << "〣------------------------------------------------------------------"
+        "-----------------------------------------------------------------------〣\n";
+        cout << "〣           Salesman_ID: " << this->id << " ║ Name: " << this->name << " ║ CNIC: " << this->cnic
+        << " ║ Salary: " << this->salary << " ║ Phone: " << this->phone;
+        cout << "\n〣------------------------------------------------------------------"
+        "-----------------------------------------------------------------------〣\n";   
+    }
+
+    void viewMySalesHistory(SalesManager &sm) const {
+        vector <SaleRecord> slr = sm.get_Sales_By_Salesman(this->id);
+        if (slr.size() == 0) {
+            cout << "You Have No Sales Yet.\n";
+        } else {
+            for (int i = 0; i < slr.size(); i++) {
+                slr[i].dispRec();
+            }
+        }
+    }
+    
+    static Salesman* getSalesman_ById (string __id) {
+        string temp_id, temp_name, temp_email, temp_phone, temp_username, temp_password;
+        string temp_cnic, temp_hireDate;
+        int temp_sale_ctt;
+        double temp_salary;
+        string temp;
+
+        int num = number_of_models ("salesman.txt");
+
+        ifstream read ("salesman.txt");
+        if (!read) {
+            throw "\"salesman.txt\" File Can't be Opened.\n";
+        } getline (read, temp, '\n');
+
+        for (int i = 0; i < num; i++) {
+            getline (read, temp_id, '|');
+            getline (read, temp_name, '|');
+            getline (read, temp_email, '|');
+            getline (read, temp_phone, '|');
+            getline (read, temp_cnic, '|');
+            getline (read, temp_hireDate, '|');
+            read >> temp_salary;
+            read.ignore();
+            read >> temp_sale_ctt;
+            read.ignore();
+            getline (read, temp_username, '|');
+            getline (read, temp_password, '\n');
+
+            if (temp_id == __id) {
+                Salesman* to_send = new Salesman (temp_id, temp_name, temp_email, temp_phone, temp_username,
+                temp_password, temp_cnic, temp_hireDate, temp_salary, temp_sale_ctt);
+    
+                return to_send;
+            }
+        }
+
+        throw "No Salesman of Such ID.\n";
+        return nullptr;
+    }
+};
+
+class RepairMan : public Employee {
+    string specialization;
+
+public:
+    RepairMan () : Employee () {
+        this->specialization = "NULL";
+    }
+
+    RepairMan(string _id, string _name, string _email, string _phone,
+    string _username, string _password, string _cnic,
+    string _hireDate, double _Salary, string  _specialization) : Employee 
+    (_id,_name,_email,_phone,_username,_password,_cnic,_hireDate,_Salary) {
+        this->specialization = _specialization;
+    } 
+
+    RepairMan (const RepairMan &other) : Employee (other) {
+        this->specialization = other.specialization;
+    }
+
+    void showMenu() override {
+        cout << "                            |〣--------------------------|〣 RepairMan Service Menu 〣|--------------------------〣|\n\n";
+        cout << "1. View Pending Jobs.\n";
+        cout << "2. Accept Pending Jobs.\n";
+        cout << "3. Mark Job Status.\n";
+        cout << "4. View My Profile.\n";
+        cout << "5. Exit.\n";
+    }
+    
+    string getRole() const override {
+        return "RepairMan";
+    }
+ 
+    string getSpecialization() const {
+        return this->specialization;
+    }
+
+    string getPasscode () const {
+        return this->password;
+    }
+
+    void disp_Info () const override {
+        cout << "                            |〣--------------------------|〣 Repairman Service Menu 〣|--------------------------〣|\n\n";
+        cout << "〣------------------------------------------------------------------"
+        "-----------------------------------------------------------------------〣\n";
+        cout << "〣           RepairMan_ID: " << this->id << " ║ Name: " << this->name << " ║ CNIC: " << this->cnic
+        << " ║ Salary: " << this->salary << " ║ Phone: " << this->phone;
+        cout << "\n〣------------------------------------------------------------------"
+        "-----------------------------------------------------------------------〣\n";
+    }
+ 
+    void viewPendingJobs(RepairManager &rm) const {
+        vector<RepairRecord> hist = rm.getPendingJobs();
+        if (hist.size() == 0) {
+            cout << "No Pending Jobs Right Now.\n";
+        } else {
+            for (int i = 0 ; i < hist.size(); i++) {
+                hist[i].Disp_RepairRecord();
+            }
+        }
+    }
+
+    void acceptJob(RepairManager &rm, const string &repairID) {
+        rm.assignRepairMan(repairID, this->id);
+        rm.updateStatus(repairID, "In Progress");
+        rm.saveAll();
+    }
+
+    void markJobCompleted(RepairManager &rm, const string &repairID) {
+        rm.updateStatus(repairID, "Completed");
+        rm.saveAll();
+    }
+        
+    static RepairMan* get_RepairmanById (string __id) {
+        string temp_id, temp_name, temp_email, temp_phone, temp_username, temp_password;
+        string temp_cnic, temp_hireDate, temp_specialization;
+        double temp_salary;
+        string temp;
+
+        int num = number_of_models ("repairman.txt");
+
+        ifstream read ("repairman.txt");
+        if (!read) {
+            throw "\"repairman.txt\" File Can't be Opened.\n";
+        } getline (read, temp, '\n');
+
+        for (int i = 0; i < num; i++) {
+            getline (read, temp_id, '|');
+            getline (read, temp_name, '|');
+            getline (read, temp_email, '|');
+            getline (read, temp_phone, '|');
+            getline (read, temp_cnic, '|');
+            getline (read, temp_hireDate, '|');
+            read >> temp_salary;
+            read.ignore();
+            getline (read, temp_specialization, '|');
+            getline (read, temp_username, '|');
+            getline (read, temp_password, '\n');
+
+            if (temp_id == __id) {
+                RepairMan* to_send = new RepairMan (temp_id, temp_name, temp_email, temp_phone, temp_username,
+                temp_password, temp_cnic, temp_hireDate, temp_salary, temp_specialization);
+    
+                return to_send;
+            }
+        }
+
+        throw "No RepairMan of Such ID.\n";
+        return nullptr;
+    }
+    
+};
+
+class Admin {
+    string id;
+    string name;
+    string username;
+    string password;
+
+public:
+    Admin () {
+        this->id = "NULL";
+        this->name = "NULL";
+        this->username = "NULL";
+        this->password = "NULL";
+    }
+
+    Admin(string _id, string _name, string _username, string _password) {
+        this->id = _id;
+        this->name = _name;
+        this->username = _username;
+        this->password = _password;
+    }
+ 
+    void showMenu() {
+        cout << "                            |〣--------------------------|〣 Admin Control Panel 〣|--------------------------〣|\n\n";
+        cout << "1.  Add New Car Model.\n";
+        cout << "2.  Add New Bike Model.\n";
+        cout << "3.  Add New Scooty Model.\n";
+        cout << "4.  Remove Vehicle Model.\n";
+        cout << "5.  Update Vehicle Stock.\n";
+        cout << "6.  View All Vehicles.\n";
+        cout << "7.  Add New Customer.\n";
+        cout << "8.  Remove Customer.\n";
+        cout << "9.  Add New Salesman.\n";
+        cout << "10. Remove Salesman.\n";
+        cout << "11. Add New RepairMan.\n";
+        cout << "12. Remove RepairMan.\n";
+        cout << "13. Update Employee Salary.\n";
+        cout << "14. View All Customers.\n";
+        cout << "15. View All Salesmen.\n";
+        cout << "16. View All RepairMen.\n";
+        cout << "17. View Pending Repairs.\n";
+        cout << "18. Assign RepairMan to Job.\n";
+        cout << "19. View Sales Report.\n";
+        cout << "20. Exit.\n";
+    }
+
+    string getRole() const {
+        return "Admin";
+    }  
+
+    string getUsername() const { 
+        return this->username; 
+    }
+
+    bool checkPassword(const string &inp) const {
+        return this->password == inp; 
+    }
+
+    void addCar(Inventory &inv) {
+        string temp_model_id, temp_brand, temp_model_name, temp_color, temp_fuel_type, temp_transmission;
+        int temp_year, temp_quantity, temp_engine_cc, temp_mileage_kmph, temp_seatingCapacity, temp_numDoors;
+        double temp_price;
+        bool temp_is_electic;
+
+        cout << "Enter Car's ID: ";
+        cin >> temp_model_id;
+        cout << "Enter Car's Brand: ";
+        cin >> temp_brand;
+        cout << "Enter Car's Name: ";
+        cin.ignore();
+        getline(cin, temp_model_name);
+        cout << "Enter Car's Release Year: ";
+        cin >> temp_year;
+        cout << "Enter Car's Color: ";
+        cin.ignore();
+        getline(cin, temp_color);
+        cout << "Enter Car's Price: ";
+        cin >> temp_price;
+        cout << "Enter Car's Quantity: ";
+        cin >> temp_quantity;
+        cout << "Is Car Electric? (0 or 1): ";\
+        cin >> temp_is_electic;
+        cout << "Enter Car's Engine CC: ";
+        cin >> temp_engine_cc;
+        cout << "Enter Car's Mileage (KMPH): ";
+        cin >> temp_mileage_kmph;
+        cout << "Enter Car's Fuel Type: ";
+        cin >> temp_fuel_type;
+        cout << "Enter Car's Seating Capacity: ";
+        cin >> temp_seatingCapacity;
+        cout << "Enter Car's Transmisstion (Automatic/Manual): ";
+        cin >> temp_transmission;
+        cout << "Enter Car's Number of Doors: ";
+        cin >> temp_numDoors;
+
+        Car nw_Car (temp_model_id, temp_brand, temp_model_name, temp_year, temp_color, temp_price,
+        temp_quantity, temp_is_electic, temp_engine_cc, temp_mileage_kmph, temp_fuel_type, temp_seatingCapacity,
+        temp_transmission, temp_numDoors);
+
+        inv.addCar(nw_Car);
+        inv.saveAll();
+    }   
+
+    void addBike(Inventory &inv) {
+        string temp_model_id, temp_brand, temp_model_name, temp_color, temp_fuel_type, temp_bikeType;
+        int temp_year, temp_quantity, temp_engine_cc, temp_mileage_kmph;
+        double temp_price;
+        bool temp_is_electic;
+
+        cout << "Enter Bike's ID: ";
+        cin >> temp_model_id;
+        cout << "Enter Bike's Brand: ";
+        cin >> temp_brand;
+        cout << "Enter Bike's Name: ";
+        cin.ignore();
+        getline(cin, temp_model_name);
+        cout << "Enter Bike's Release Year: ";
+        cin >> temp_year;
+        cout << "Enter Bike's Color: ";
+        cin.ignore();
+        getline(cin, temp_color);
+        cout << "Enter Bike's Price: ";
+        cin >> temp_price;
+        cout << "Enter Bike's Quantity: ";
+        cin >> temp_quantity;
+        cout << "Is Bike Electric? (0 or 1): ";\
+        cin >> temp_is_electic;
+        cout << "Enter Bike's Engine CC: ";
+        cin >> temp_engine_cc;
+        cout << "Enter Bike's Mileage (KMPH): ";
+        cin >> temp_mileage_kmph;
+        cout << "Enter Bike's Fuel Type: ";
+        cin >> temp_fuel_type;
+        cout << "Enter Bike's Type (Standard/Sports): ";
+        cin >> temp_bikeType;
+
+        Bike nw_bike (temp_model_id, temp_brand, temp_model_name, temp_year, temp_color, temp_price,
+        temp_quantity, temp_is_electic, temp_engine_cc, temp_mileage_kmph, temp_fuel_type, temp_bikeType);
+
+        inv.addBike(nw_bike);
+        inv.saveAll();
+    } 
+
+    void addScooty(Inventory &inv) {
+        string temp_model_id, temp_brand, temp_model_name, temp_color, temp_fuel_type;
+        int temp_year, temp_quantity, temp_engine_cc, temp_mileage_kmph;
+        double temp_price, temp_stCap;
+        bool temp_is_electic;
+
+        cout << "Enter Scooty's ID: ";
+        cin >> temp_model_id;
+        cout << "Enter Scooty's Brand: ";
+        cin >> temp_brand;
+        cout << "Enter Scooty's Name: ";
+        cin.ignore();
+        getline(cin, temp_model_name);
+        cout << "Enter Scooty's Release Year: ";
+        cin >> temp_year;
+        cout << "Enter Scooty's Color: ";
+        cin.ignore();
+        getline(cin, temp_color);
+        cout << "Enter Scooty's Price: ";
+        cin >> temp_price;
+        cout << "Enter Scooty's Quantity: ";
+        cin >> temp_quantity;
+        cout << "Is Scooty Electric? (0 or 1): ";\
+        cin >> temp_is_electic;
+        cout << "Enter Scooty's Engine CC: ";
+        cin >> temp_engine_cc;
+        cout << "Enter Scooty's Mileage (KMPH): ";
+        cin >> temp_mileage_kmph;
+        cout << "Enter Scooty's Fuel Type: ";
+        cin >> temp_fuel_type;
+        cout << "Enter Scooty's Storage Capacity (Litres): ";
+        cin >> temp_stCap;
+
+        Scooty nw_scooty (temp_model_id, temp_brand, temp_model_name, temp_year, temp_color, temp_price,
+        temp_quantity, temp_is_electic, temp_engine_cc, temp_mileage_kmph, temp_fuel_type, temp_stCap);
+
+        inv.addScooty(nw_scooty);
+        inv.saveAll();
+    } 
+
+    void removeVehicleModel(Inventory &inv, const string &modelID) {
+        inv.removeModel (modelID);
+        inv.saveAll();
+    }
+
+    void updateStock(Inventory &inv, const string &modelID, int newQuantity) {
+        inv.updateQuantity(modelID, newQuantity);
+    }
+ 
+    void addSalesman(vector<Salesman> &salesmen) {
+        string id, name, email, phone, username, password, cnic;
+        double salary;
+
+        time_t now = time(nullptr);
+        tm* local_time = localtime(&now);
+        stringstream ss;
+        ss << put_time(local_time, "%d-%m-%Y");
+        string date_str = ss.str();
+
+        cout << "Enter ID: ";
+        cin >> id;
+        cout << "Enter Name: ";
+        cin.ignore();
+        getline(cin, name);
+        cout << "Enter Email: ";
+        cin >> email;
+        cout << "Enter Phone: ";
+        cin >> phone;
+        cout << "Enter CNIC: ";
+        cin >> cnic;
+        cout << "Enter Salary: ";
+        cin >> salary;
+        cout << "Enter Username: ";
+        cin >> username;
+        cout << "Enter Password: ";
+        cin >> password;
+
+        Salesman nw_sm (id, name, email, phone, username, password, cnic, date_str, salary, 0);
+        salesmen.push_back(nw_sm);
+    }
+    
+
+    void removeSalesman(vector<Salesman> &salesmen, const string &salesmanID) {
+        for (int i = 0; i < salesmen.size(); i++) {
+            if (salesmen[i].getID() == salesmanID) {
+                salesmen.erase(salesmen.begin() + i);  //Learned this methord After a Google search.
+                return;
+            }
+        }
+
+        throw "Salesman Not Found.\n";
+        return;
+    }
+
+    void addRepairMan(vector<RepairMan> &repairmen) {
+        string id, name, email, phone, username, password, cnic, special;
+        double salary;
+
+        time_t now = time(nullptr);
+        tm* local_time = localtime(&now);
+        stringstream ss;
+        ss << put_time(local_time, "%d-%m-%Y");
+        string date_str = ss.str();
+
+        cout << "Enter ID: ";
+        cin >> id;
+        cout << "Enter Name: ";
+        cin.ignore();
+        getline(cin, name);
+        cout << "Enter Email: ";
+        cin >> email;
+        cout << "Enter Phone: ";
+        cin >> phone;
+        cout << "Enter CNIC: ";
+        cin >> cnic;
+        cout << "Enter Salary: ";
+        cin >> salary;
+        cout << "Enter Specialization: ";
+        cin >> special;
+        cout << "Enter Username: ";
+        cin >> username;
+        cout << "Enter Password: ";
+        cin >> password;
+
+        RepairMan nw_rm (id, name, email, phone, username, password, cnic, date_str, salary, special);
+        repairmen.push_back(nw_rm);
+    }
+    void removeRepairMan(vector<RepairMan> &repairmen, const string &repairManID) {
+        for (int i = 0; i < repairmen.size(); i++) {
+            if (repairmen[i].getID() == repairManID) {
+                repairmen.erase(repairmen.begin() + i);
+                return;
+            }
+        }
+
+        throw "Repairman Not Found.\n";
+        return;
+    }
+
+    void paySalary(Employee &emp, double amount) {
+        return;
+    }
+ 
+    void addCustomer(vector<Customer> &customers) {
+        string id, name, email, phone, username, password, cnic, address;
+
+        time_t now = time(nullptr);
+        tm* local_time = localtime(&now);
+        stringstream ss;
+        ss << put_time(local_time, "%d-%m-%Y");
+        string date_str = ss.str();
+
+        cout << "Enter Customer ID: ";
+        cin >> id;
+        cout << "Enter Name: ";
+        cin.ignore();
+        getline(cin, name);
+        cout << "Enter Email: ";
+        cin >> email;
+        cout << "Enter Phone: ";
+        cin >> phone;
+        cout << "Enter CNIC: ";
+        cin >> cnic;
+        cout << "Enter Address: ";
+        cin.ignore();
+        getline(cin, address);
+        cout << "Enter Username: ";
+        cin >> username;
+        cout << "Enter Password: ";
+        cin >> password;
+
+        Customer nw_cust (id, name, email, phone, username, password, cnic, address, date_str);
+        customers.push_back(nw_cust);
+    }
+
+    void removeCustomer(vector<Customer> &customers, const string &customerID) {
+        for (int i = 0; i < customers.size(); i++) {
+            if (customers[i].getID() == customerID) {
+                customers.erase(customers.begin() + i);
+                return;
+            }
+        }
+
+        throw "Customer Not Found.\n";
+    }
+ 
+    void viewSalesReport(SalesManager &sm) const {
+        cout << "                            |〣--------------------------|〣 Sales Report 〣|--------------------------〣|\n\n";
+        cout << "〣------------------------------------------------------------------"
+        "-----------------------------〣\n";
+        cout << "〣      Total Sales: " << sm.get_Total_Sales_Count() << " ║ Total Revenue: " << sm.get_Total_Revenue();
+        cout << "\n〣------------------------------------------------------------------"
+        "-----------------------------〣\n";
+    }
+
+    void viewAllVehicles(Inventory &inv) const {
+        cout << "                            |〣--------------------------|〣 All Vehicles 〣|--------------------------〣|\n\n";
+        inv.Changeable_disp();
+    }
+
+    void viewAllSalesmen(const vector<Salesman> &salesmen) const {
+        cout << "                            |〣--------------------------|〣 All Salesmen 〣|--------------------------〣|\n\n";
+        if (salesmen.size() == 0) {
+            cout << "No Salesmen On Record.\n";
+            return;
+        }
+        for (int i = 0; i < salesmen.size(); i++) {
+            salesmen[i].disp_Info();
+        }
+    }
+
+    void viewAllRepairmen(const vector<RepairMan> &repairmen) const {
+        cout << "                            |〣--------------------------|〣 All Repairmen 〣|--------------------------〣|\n\n";
+        if (repairmen.size() == 0) {
+            cout << "No Repairmen On Record.\n";
+            return;
+        }
+        for (int i = 0; i < repairmen.size(); i++) {
+            repairmen[i].disp_Info();
+        }
+    }
+
+    void viewAllCustomers(const vector<Customer> &customers) const {
+        cout << "                            |〣--------------------------|〣 All Customers 〣|--------------------------〣|\n\n";
+        if (customers.size() == 0) {
+            cout << "No Customers On Record.\n";
+            return;
+        }
+        for (int i = 0; i < customers.size(); i++) {
+            customers[i].disp_Info();
+        }
+    }
+
+    void viewPendingRepairs(RepairManager &rm) const {
+        cout << "                            |〣--------------------------|〣 Pending Repairs 〣|--------------------------〣|\n\n";
+        vector<RepairRecord> rem = rm.getPendingJobs();
+        if (rem.size() == 0) {
+            cout << "No Pending Repairs Right Now.\n";
+            return;
+        }
+        for (int i = 0; i < rem.size(); i++) {
+            rem[i].Disp_RepairRecord();
+        }
+    }
+ 
+    static Admin* getAdmin () {
+        string temp, id, name, username, passcode_;
+
+        ifstream read ("admin.txt");
+        if (!read) {
+            throw "\"repairman.txt\" File Can't be Opened.\n";
+        } getline (read, temp, '\n');
+
+        getline (read,id,'|');
+        getline (read,name,'|');
+        getline (read,username,'|');
+        getline (read,passcode_,'\n');
+
+        read.close();
+
+        Admin* deliver = new Admin (id,name,username,passcode_);
+        return deliver;
+    }
+};
+
+class ShowroomSystem {
+    Inventory inventory;
+    SalesManager salesManager;
+    RepairManager repairManager;
+ 
+    vector<Admin> admins;
+    vector<Salesman> salesmen;
+    vector<Customer> customers;
+    vector<RepairMan> repairmen;
+    vector <string> introLines;
+ 
+public:
+    void loadEverything() {
+        string temp_id, temp_name, temp_email, temp_phone, temp_username, temp_password;
+        string temp_cnic, temp_hireDate, temp_address, temp_registration_date, temp_specialization;
+        int temp_sales_ct;
+        double temp_salary;
+        string temp;
+
+        this->inventory.loadAll();
+        this->salesManager.loadAll();
+        this->repairManager.loadAll();
+
+        int num = number_of_models("admin.txt");
+
+        ifstream read("admin.txt");
+        if (!read) {
+            throw "\"admin.txt\" File Can't be Opened.\n";
+        } getline(read, temp, '\n');
+
+        introLines.push_back (temp);
+
+        for (int i = 0; i < num; i++) {
+            string a_id, a_name, a_username, a_password;
+            getline(read, a_id, '|');
+            getline(read, a_name, '|');
+            getline(read, a_username, '|');
+            getline(read, a_password, '\n');
+
+            Admin nw_admin(a_id, a_name, a_username, a_password);
+            this->admins.push_back(nw_admin);
+        } read.close();
+
+        num = number_of_models("salesman.txt");
+
+        read.open("salesman.txt");
+        if (!read) {
+            throw "\"salesman.txt\" File Can't be Opened.\n";
+        } getline(read, temp, '\n');
+
+        introLines.push_back (temp);
+
+        for (int i = 0; i < num; i++) {
+            getline(read, temp_id, '|');
+            getline(read, temp_name, '|');
+            getline(read, temp_email, '|');
+            getline(read, temp_phone, '|');
+            getline(read, temp_cnic, '|');
+            getline(read, temp_hireDate, '|');
+            read >> temp_salary;
+            read.ignore();
+            read >> temp_sales_ct;
+            read.ignore();
+            getline(read, temp_username, '|');
+            getline(read, temp_password, '\n');
+
+            Salesman nw_sm(temp_id, temp_name, temp_email, temp_phone, temp_username,
+            temp_password, temp_cnic, temp_hireDate, temp_salary, temp_sales_ct);
+            this->salesmen.push_back(nw_sm);
+        } read.close();
+
+        num = number_of_models("customer.txt");
+
+        read.open("customer.txt");
+        if (!read) {
+            throw "\"customer.txt\" File Can't be Opened.\n";
+        } getline(read, temp, '\n');
+
+        introLines.push_back(temp);
+
+        for (int i = 0; i < num; i++) {
+            getline(read, temp_id, '|');
+            getline(read, temp_name, '|');
+            getline(read, temp_email, '|');
+            getline(read, temp_phone, '|');
+            getline(read, temp_cnic, '|');
+            getline(read, temp_address, '|');
+            getline(read, temp_registration_date, '|');
+            getline(read, temp_username, '|');
+            getline(read, temp_password, '\n');
+
+            Customer nw_cust(temp_id, temp_name, temp_email, temp_phone, temp_username,
+            temp_password, temp_cnic, temp_address, temp_registration_date);
+            this->customers.push_back(nw_cust);
+        } read.close();
+
+        num = number_of_models("repairman.txt");
+
+        read.open("repairman.txt");
+        if (!read) {
+            throw "\"repairman.txt\" File Can't be Opened.\n";
+        } getline(read, temp, '\n');
+
+        introLines.push_back(temp);
+
+        for (int i = 0; i < num; i++) {
+            getline(read, temp_id, '|');
+            getline(read, temp_name, '|');
+            getline(read, temp_email, '|');
+            getline(read, temp_phone, '|');
+            getline(read, temp_cnic, '|');
+            getline(read, temp_hireDate, '|');
+            read >> temp_salary;
+            read.ignore();
+            getline(read, temp_specialization, '|');
+            getline(read, temp_username, '|');
+            getline(read, temp_password, '\n');
+
+            RepairMan nw_rm(temp_id, temp_name, temp_email, temp_phone, temp_username,
+            temp_password, temp_cnic, temp_hireDate, temp_salary, temp_specialization);
+            this->repairmen.push_back(nw_rm);
+        
+        } read.close();
+    }
+
+    void run() {
+        this->loadEverything();
+
+        int choice;
+        string inp_username, inp_password;
+
+        while (true) {
+            system("clear");
+            cout << "                            |〣--------------------------|〣 Welcome to Showroom System 〣|--------------------------〣|\n\n";
+
+            cout << "1. Login\n";
+            cout << "2. Admin Login\n";
+            cout << "3. Exit\n";
+            cout << "Enter Choice: ";
+            cin >> choice;
+
+            if (choice == 3) {
+                system("clear");
+                cout << "Goodbye.\n";
+                break;
+            }
+
+            cout << "Enter Username: ";
+            cin >> inp_username;
+            cout << "Enter Password: ";
+            cin >> inp_password;
+
+            if (choice == 2) {
+                bool found = false;
+                for (int i = 0; i < this->admins.size(); i++) {
+                    if (this->admins[i].getUsername() == inp_username && this->admins[i].checkPassword(inp_password)) {
+                        found = true;
+                        int ad_choice;
+
+                        while (true) {
+                            system("clear");
+                            this->admins[i].showMenu();
+                            cout << "Enter Choice: ";
+                            cin >> ad_choice;
+
+                            if (ad_choice == 20) {
+                                break;
+                            } 
+                            
+                            string modelID, salesmanID, repairmanID, customerID, repairID;
+                            int newQty;
+                            double newSalary;
+
+                            try {
+                                if (ad_choice == 1) {
+                                    system("clear");
+                                    this->admins[i].addCar(this->inventory);
+                                } else if (ad_choice == 2) {
+                                    system("clear");
+                                    this->admins[i].addBike(this->inventory);
+                                } else if (ad_choice == 3) {
+                                    system("clear");
+                                    this->admins[i].addScooty(this->inventory);
+                                } else if (ad_choice == 4) {
+                                    system("clear");
+                                    cout << "Enter Model ID to Remove: ";
+                                    cin >> modelID;
+                                    this->admins[i].removeVehicleModel(this->inventory, modelID);
+                                    cout << "Model Removed Successfully.\n";
+                                } else if (ad_choice == 5) {
+                                    system("clear");
+                                    cout << "Enter Model ID: ";
+                                    cin >> modelID;
+                                    cout << "Enter New Quantity: ";
+                                    cin >> newQty;
+                                    this->admins[i].updateStock(this->inventory, modelID, newQty);
+                                    this->inventory.saveAll();
+                                    cout << "Stock Updated Successfully.\n";
+                                } else if (ad_choice == 6) {
+                                    system("clear");
+                                    this->admins[i].viewAllVehicles(this->inventory);
+                                } else if (ad_choice == 7) {
+                                    system("clear");
+                                    this->admins[i].addCustomer(this->customers);
+                                    this->saveEverything();
+                                    cout << "Customer Added Successfully.\n";
+                                } else if (ad_choice == 8) {
+                                    system("clear");
+                                    cout << "Enter Customer ID to Remove: ";
+                                    cin >> customerID;
+                                    this->admins[i].removeCustomer(this->customers, customerID);
+                                    this->saveEverything();
+                                    cout << "Customer Removed Successfully.\n";
+                                } else if (ad_choice == 9) {
+                                    system("clear");
+                                    this->admins[i].addSalesman(this->salesmen);
+                                    this->saveEverything();
+                                    cout << "Salesman Added Successfully.\n";
+                                } else if (ad_choice == 10) {
+                                    system("clear");
+                                    cout << "Enter Salesman ID to Remove: ";
+                                    cin >> salesmanID;
+                                    this->admins[i].removeSalesman(this->salesmen, salesmanID);
+                                    this->saveEverything();
+                                    cout << "Salesman Removed Successfully.\n";
+                                } else if (ad_choice == 11) {
+                                    system("clear");
+                                    this->admins[i].addRepairMan(this->repairmen);
+                                    this->saveEverything();
+                                    cout << "RepairMan Added Successfully.\n";
+                                } else if (ad_choice == 12) {
+                                    system("clear");
+                                    cout << "Enter RepairMan ID to Remove: ";
+                                    cin >> repairmanID;
+                                    this->admins[i].removeRepairMan(this->repairmen, repairmanID);
+                                    this->saveEverything();
+                                    cout << "RepairMan Removed Successfully.\n";
+                                } else if (ad_choice == 13) {
+                                    system("clear");
+                                    string emp_id, emp_type;
+                                    cout << "Enter Employee Type (Salesman/RepairMan): ";
+                                    cin >> emp_type;
+                                    cout << "Enter Employee ID: ";
+                                    cin >> emp_id;
+                                    cout << "Enter New Salary: ";
+                                    cin >> newSalary;
+                                    if (emp_type == "Salesman") {
+                                        bool emp_found = false;
+                                        for (int j = 0; j < this->salesmen.size(); j++) {
+                                            if (this->salesmen[j].getID() == emp_id) {
+                                                this->admins[i].paySalary(this->salesmen[j], newSalary);
+                                                this->saveEverything();
+                                                emp_found = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!emp_found) cout << "Salesman Not Found.\n";
+                                    } else if (emp_type == "RepairMan") {
+                                        bool emp_found = false;
+                                        for (int j = 0; j < this->repairmen.size(); j++) {
+                                            if (this->repairmen[j].getID() == emp_id) {
+                                                this->admins[i].paySalary(this->repairmen[j], newSalary);
+                                                this->saveEverything();
+                                                emp_found = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!emp_found) cout << "RepairMan Not Found.\n";
+                                    } else {
+                                        cout << "Invalid Employee Type.\n";
+                                    }
+                                } else if (ad_choice == 14) {
+                                    system("clear");
+                                    this->admins[i].viewAllCustomers(this->customers);
+                                } else if (ad_choice == 15) {
+                                    system("clear");
+                                    this->admins[i].viewAllSalesmen(this->salesmen);
+                                } else if (ad_choice == 16) {
+                                    system("clear");
+                                    this->admins[i].viewAllRepairmen(this->repairmen);
+                                } else if (ad_choice == 17) {
+                                    system("clear");
+                                    this->admins[i].viewPendingRepairs(this->repairManager);
+                                } else if (ad_choice == 18) {
+                                    system("clear");
+                                    cout << "Enter Repair ID: ";
+                                    cin >> repairID;
+                                    cout << "Enter RepairMan ID: ";
+                                    cin >> repairmanID;
+                                    this->repairManager.assignRepairMan(repairID, repairmanID);
+                                    this->repairManager.saveAll();
+                                    cout << "RepairMan Assigned Successfully.\n";
+                                } else if (ad_choice == 19) {
+                                    system("clear");
+                                    this->admins[i].viewSalesReport(this->salesManager);
+                                } else {
+                                    cout << "Invalid Choice.\n";
+                                }
+                            } catch (const char* err) {
+                                cout << "Error: " << err;
+                            }
+
+                            cout << "\nPress Enter to Continue...";
+                            cin.ignore();
+                            cin.get();
+                        }
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    cout << "Invalid Admin Credentials.\n";
+                    cout << "\nPress Enter to Continue...";
+                    cin.ignore();
+                    cin.get();
+                }
+
+            } else if (choice == 1) {
+                Person* logged_in = this->authenticateLogin(inp_username, inp_password);
+
+                if (logged_in == nullptr) {
+                    cout << "Invalid Credentials.\n";
+                    cout << "\nPress Enter to Continue...";
+                    cin.ignore();
+                    cin.get();
+                    continue;
+                }
+
+                string role = logged_in->getRole();
+                int usr_choice;
+
+                if (role == "Customer") {
+                    Customer* cust = (Customer*)logged_in;
+                    while (true) {
+                        system("clear");
+                        cust->showMenu();
+                        cout << "Enter Choice: ";
+                        cin >> usr_choice;
+
+                        if (usr_choice == 8) break;
+
+                        try {
+                            if (usr_choice == 1) {
+                                system("clear");
+                                cust->browse_cars(this->inventory);
+                            } else if (usr_choice == 2) {
+                                system("clear");
+                                cust->browse_bikes(this->inventory);
+                            } else if (usr_choice == 3) {
+                                system("clear");
+                                cust->browse_scooties(this->inventory);
+                            } else if (usr_choice == 4) {
+                                system("clear");
+                                cust->browse_vehicles(this->inventory);
+                            } else if (usr_choice == 5) {
+                                system("clear");
+                                cust->viewMyPurchases(this->salesManager);
+                            } else if (usr_choice == 6) {
+                                system("clear");
+                                cust->viewMyRepairHistory(this->repairManager);
+                            } else if (usr_choice == 7) {
+                                system("clear");
+                                string plateNum, vehType, partName;
+                                cout << "Enter Your Vehicle Plate Number: ";
+                                cin >> plateNum;
+                                cout << "Enter Vehicle Type (Car/Bike/Scooty): ";
+                                cin >> vehType;
+                                cout << "Enter Part to Repair: ";
+                                cin.ignore();
+                                getline(cin, partName);
+                                cust->requestVehicleRepair(this->repairManager, plateNum, vehType, partName);
+                                this->repairManager.saveAll();
+                                cout << "Repair Request Submitted Successfully.\n";
+                            } else {
+                                cout << "Invalid Choice.\n";
+                            }
+                        } catch (const char* err) {
+                            cout << "Error: " << err;
+                        }
+
+                        cout << "\nPress Enter to Continue...";
+                        cin.ignore();
+                        cin.get();
+                    }
+
+                } else if (role == "Salesman") {
+                    Salesman* sm = (Salesman*)logged_in;
+                    while (true) {
+                        system("clear");
+                        sm->showMenu();
+                        cout << "Enter Choice: ";
+                        cin >> usr_choice;
+
+                        if (usr_choice == 5) {
+                            break;
+                        }
+
+                        try {
+                            if (usr_choice == 1) {
+                                system("clear");
+                                string modelID, custID;
+                                cout << "Enter Model ID to Sell: ";
+                                cin >> modelID;
+                                cout << "Enter Customer ID: ";
+                                cin >> custID;
+                                Customer* cust = Customer::getCustomer_ById(custID);
+                                sm->sellVehicle(this->inventory, *cust, this->salesManager, modelID);
+                                sm->incrementSalesCount();
+                                this->saveEverything();
+                                delete cust;
+                                cout << "Vehicle Sold Successfully.\n";
+                            } else if (usr_choice == 2) {
+                                system("clear");
+                                sm->viewMyProfile();
+                            } else if (usr_choice == 3) {
+                                system("clear");
+                                sm->viewMySalesHistory(this->salesManager);
+                            } else {
+                                cout << "Invalid Choice.\n";
+                            }
+                        } catch (const char* err) {
+                            cout << "Error: " << err;
+                        }
+
+                        cout << "\nPress Enter to Continue...";
+                        cin.ignore();
+                        cin.get();
+                    }
+
+                } else if (role == "RepairMan") {
+                    RepairMan* rm = (RepairMan*)logged_in;
+                    while (true) {
+                        system("clear");
+                        rm->showMenu();
+                        cout << "Enter Choice: ";
+                        cin >> usr_choice;
+
+                        if (usr_choice == 4) break;
+
+                        try {
+                            if (usr_choice == 1) {
+                                system("clear");
+                                rm->viewPendingJobs(this->repairManager);
+                            } else if (usr_choice == 2) {
+                                system("clear");
+                                string repairID;
+                                cout << "Enter Repair ID to Accept: ";
+                                cin >> repairID;
+                                rm->acceptJob(this->repairManager, repairID);
+                                cout << "Job Accepted Successfully.\n";
+                            } else if (usr_choice == 3) {
+                                system("clear");
+                                string repairID;
+                                cout << "Enter Repair ID to Mark Completed: ";
+                                cin >> repairID;
+                                rm->markJobCompleted(this->repairManager, repairID);
+                                cout << "Job Marked as Completed.\n";
+                            } else {
+                                cout << "Invalid Choice.\n";
+                            }
+                        } catch (const char* err) {
+                            cout << "Error: " << err;
+                        }
+
+                        cout << "\nPress Enter to Continue...";
+                        cin.ignore();
+                        cin.get();
+                    }
+                }
+
+            } else {
+                cout << "Invalid Choice.\n";
+                cout << "\nPress Enter to Continue...";
+                cin.ignore();
+                cin.get();
+            }
+        }
+    }
+ 
+    Person* authenticateLogin(const string &username, const string &password) {
+        for (int i = 0; i < this->salesmen.size(); i++) {
+            if (this->salesmen[i].getUsername() == username && this->salesmen[i].checkPassword(password)) {
+                return &(this->salesmen[i]);
+            }
+        }
+        for (int i = 0; i < this->customers.size(); i++) {
+            if (this->customers[i].getUsername() == username && this->customers[i].checkPassword(password)) {
+                return &(this->customers[i]);
+            }
+        }
+        for (int i = 0; i < this->repairmen.size(); i++) {
+            if (this->repairmen[i].getUsername() == username && this->repairmen[i].checkPassword(password)) {
+                return &(this->repairmen[i]);
+            }
+        }
+
+        return nullptr;
+    }
+
+    void saveEverything() const {
+        ofstream write("salesman.txt");
+
+        if (!write) {
+            throw "\"salesman.txt\" File Can't be Opened.\n";
+        } write << introLines[1] << endl;
+
+        for (int i = 0; i < this->salesmen.size(); i++) {
+            write << this->salesmen[i].getID() << "|" << this->salesmen[i].getName() << "|"
+            << this->salesmen[i].getEmail() << "|" << this->salesmen[i].getPhone() << "|"
+            << this->salesmen[i].getCNIC() << "|" << this->salesmen[i].getHireDate() << "|"
+            << this->salesmen[i].getSalary() << "|" << this->salesmen[i].getSalesCount() << "|"
+            << this->salesmen[i].getUsername() << "|" << this->salesmen[i].getPasscode() << endl;
+        } write.close();
+
+        write.open("customer.txt");
+
+        if (!write) {
+            throw "\"customer.txt\" File Can't be Opened.\n";
+        } write << introLines[2] << endl;
+
+        for (int i = 0; i < this->customers.size(); i++) {
+            write << this->customers[i].getID() << "|" << this->customers[i].getName() << "|"
+            << this->customers[i].getEmail() << "|" << this->customers[i].getPhone() << "|"
+            << this->customers[i].getCNIC() << "|" << this->customers[i].getAddress() << "|"
+            << this->customers[i].get_Date() << "|"
+            << this->customers[i].getUsername() << "|" << this->customers[i].getPasscode() << endl;
+        } write.close();
+
+        write.open("repairman.txt");
+
+        if (!write) {
+            throw "\"repairman.txt\" File Can't be Opened.\n";
+        } write << introLines[3] << endl;
+
+        for (int i = 0; i < this->repairmen.size(); i++) {
+            write << this->repairmen[i].getID() << "|" << this->repairmen[i].getName() << "|"
+            << this->repairmen[i].getEmail() << "|" << this->repairmen[i].getPhone() << "|"
+            << this->repairmen[i].getCNIC() << "|" << this->repairmen[i].getHireDate() << "|"
+            << this->repairmen[i].getSalary() << "|" << this->repairmen[i].getSpecialization() << "|"
+            << this->repairmen[i].getUsername() << "|" << this->repairmen[i].getPasscode() << endl;
+        } write.close();   
+    }
+};
+
+int main () {
+    srand(time(0));
+    ShowroomSystem sys;
+    sys.run();
+    return 0;
+}

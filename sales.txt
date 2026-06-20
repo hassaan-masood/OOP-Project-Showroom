@@ -1,2 +1,3 @@
 # Fields: sale_id|model_id|vehicle_type|customer_id|salesman_id|sale_date|sale_price
 SL001|S006|Scooty|CU001|SM002|2024-06-01|120000
+SL002|C001|Car|CU001|SM001|18-06-2026|2.05e+06
